@@ -6,7 +6,7 @@ import (
 	"github.com/khirono/go-nl"
 )
 
-func Create(c *nl.Client, ifname string, linkinfo *nl.Attr) error {
+func Create(c *nl.Client, ifname string, attrs ...*nl.Attr) error {
 	flags := syscall.NLM_F_CREATE
 	flags |= syscall.NLM_F_EXCL
 	flags |= syscall.NLM_F_ACK
@@ -15,15 +15,18 @@ func Create(c *nl.Client, ifname string, linkinfo *nl.Attr) error {
 	if err != nil {
 		return err
 	}
-	err = req.Append(nl.AttrList{
-		{
-			Type:  syscall.IFLA_IFNAME,
-			Value: nl.AttrString(ifname),
-		},
-		*linkinfo,
+	err = req.Append(&nl.Attr{
+		Type:  syscall.IFLA_IFNAME,
+		Value: nl.AttrString(ifname),
 	})
 	if err != nil {
 		return err
+	}
+	for _, attr := range attrs {
+		err = req.Append(attr)
+		if err != nil {
+			return err
+		}
 	}
 	_, err = c.Do(req)
 	return err

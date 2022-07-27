@@ -24,7 +24,7 @@ func TestCreate(t *testing.T) {
 	c := nl.NewClient(conn, mux)
 
 	peer := nl.Attr{
-		Type:  VETH_INFO_PEER | syscall.NLA_F_NESTED,
+		Type: VETH_INFO_PEER | syscall.NLA_F_NESTED,
 		Value: nl.Encoders{
 			IfInfomsg{},
 			&nl.Attr{
@@ -32,6 +32,10 @@ func TestCreate(t *testing.T) {
 				Value: nl.AttrString("bar"),
 			},
 		},
+	}
+	mtu := &nl.Attr{
+		Type:  syscall.IFLA_MTU,
+		Value: nl.AttrU32(1400),
 	}
 	linkinfo := &nl.Attr{
 		Type: syscall.IFLA_LINKINFO,
@@ -48,7 +52,7 @@ func TestCreate(t *testing.T) {
 			},
 		},
 	}
-	err = Create(c, "foo", linkinfo)
+	err = Create(c, "foo", mtu, linkinfo)
 	if err != nil {
 		t.Fatal(err)
 	}
