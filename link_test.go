@@ -1,6 +1,7 @@
 package rtnllink
 
 import (
+	"sync"
 	"syscall"
 	"testing"
 
@@ -8,18 +9,26 @@ import (
 )
 
 func TestCreate(t *testing.T) {
+	var wg sync.WaitGroup
+	mux, err := nl.NewMux()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		mux.Close()
+		wg.Wait()
+	}()
+	wg.Add(1)
+	go func() {
+		mux.Serve()
+		wg.Done()
+	}()
+
 	conn, err := nl.Open(syscall.NETLINK_ROUTE)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer conn.Close()
-
-	mux, err := nl.NewMux()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer mux.Close()
-	go mux.Serve()
 
 	c := nl.NewClient(conn, mux)
 
@@ -59,18 +68,26 @@ func TestCreate(t *testing.T) {
 }
 
 func TestUp(t *testing.T) {
+	var wg sync.WaitGroup
+	mux, err := nl.NewMux()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		mux.Close()
+		wg.Wait()
+	}()
+	wg.Add(1)
+	go func() {
+		mux.Serve()
+		wg.Done()
+	}()
+
 	conn, err := nl.Open(syscall.NETLINK_ROUTE)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer conn.Close()
-
-	mux, err := nl.NewMux()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer mux.Close()
-	go mux.Serve()
 
 	c := nl.NewClient(conn, mux)
 
@@ -81,18 +98,26 @@ func TestUp(t *testing.T) {
 }
 
 func TestDown(t *testing.T) {
+	var wg sync.WaitGroup
+	mux, err := nl.NewMux()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		mux.Close()
+		wg.Wait()
+	}()
+	wg.Add(1)
+	go func() {
+		mux.Serve()
+		wg.Done()
+	}()
+
 	conn, err := nl.Open(syscall.NETLINK_ROUTE)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer conn.Close()
-
-	mux, err := nl.NewMux()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer mux.Close()
-	go mux.Serve()
 
 	c := nl.NewClient(conn, mux)
 
@@ -103,18 +128,26 @@ func TestDown(t *testing.T) {
 }
 
 func TestRemove(t *testing.T) {
+	var wg sync.WaitGroup
+	mux, err := nl.NewMux()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		mux.Close()
+		wg.Wait()
+	}()
+	wg.Add(1)
+	go func() {
+		mux.Serve()
+		wg.Done()
+	}()
+
 	conn, err := nl.Open(syscall.NETLINK_ROUTE)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer conn.Close()
-
-	mux, err := nl.NewMux()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer mux.Close()
-	go mux.Serve()
 
 	c := nl.NewClient(conn, mux)
 
